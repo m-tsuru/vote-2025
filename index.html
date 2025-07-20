@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <title>エディタ選挙 2025 投票所</title>
@@ -11,12 +12,14 @@
       text-align: center;
       padding: 20px;
     }
+
     canvas {
       max-width: 400px;
       margin: auto;
     }
   </style>
 </head>
+
 <body>
   <h2>エディタ選挙 2025</h2>
   <div id="cf-turnstile"></div>
@@ -31,10 +34,21 @@
   </ul>
   <script>
     // エディタ一覧・色
-    const editors = ['vi', 'vim', 'nano', 'emacs', 'vscode', 'sublime', 'atom', 'other'];
-    const editorLabels = ['vi', 'vim', 'nano', 'emacs', 'VSCode', 'Sublime', 'Atom', 'その他'];
+    const editors = ['vi', 'vim', 'nano', 'emacs', 'vscode', 'sublime', 'atom', 'neovim', 'ed', 'sakura', 'hidemaru', 'other'];
+    const editorLabels = ['vi', 'vim', 'nano', 'emacs', 'VSCode', 'Sublime', 'Atom', 'neovim', 'ed', 'サクラエディタ', '秀丸', '無党派層'];
     const editorColors = [
-      '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f'
+      '#4B8BBE',   // vi: 青
+      '#306998',   // vim: 濃い青
+      '#FFD43B',   // nano: 黄色
+      '#A61D4C',   // emacs: 赤紫
+      '#007ACC',   // VSCode: 明るい青
+      '#FF9800',   // Sublime: オレンジ
+      '#6E6E6E',   // Atom: グレー
+      '#00C48F',   // neovim: 緑
+      '#222222',   // ed: 黒
+      '#f0908d',   // サクラエディタ: 薄桃
+      '#223a70',   // 秀丸: 紺色
+      '#CCCCCC'    // 無党派層: 薄いグレー
     ];
 
     // ボタン生成
@@ -50,13 +64,13 @@
     });
 
     // Turnstile認証後にボタン有効化
-    window.turnstileCallback = function(token) {
+    window.turnstileCallback = function (token) {
       voteBtns.forEach(btn => btn.disabled = false);
       window.turnstileToken = token;
     };
 
     // Turnstileウィジェットのコールバック設定
-    window.onload = function() {
+    window.onload = function () {
       if (window.turnstile) {
         window.turnstile.render('#cf-turnstile', {
           sitekey: '0x4AAAAAABlzhX-ph0YwVRFJ',
@@ -93,7 +107,7 @@
     const totalVotesPlugin = {
       id: 'totalVotesCenter',
       afterDraw(chart) {
-        const {ctx, chartArea, width, height} = chart;
+        const { ctx, chartArea, width, height } = chart;
         ctx.save();
         ctx.font = 'bold 24px sans-serif';
         ctx.textAlign = 'center';
@@ -158,4 +172,5 @@
     }
   </script>
 </body>
+
 </html>
