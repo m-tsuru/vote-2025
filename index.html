@@ -19,7 +19,7 @@
 </head>
 <body>
   <h2>エディタ選挙 2025</h2>
-  <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABlzhX-ph0YwVRFJ"></div>
+  <div id="cf-turnstile"></div>
   <div id="vote-buttons"></div>
   <canvas id="halfPieChart"></canvas>
   <h2>選挙三原則</h2>
@@ -59,7 +59,7 @@
     window.onload = function() {
       if (window.turnstile) {
         window.turnstile.render('#cf-turnstile', {
-          sitekey: 'YOUR_SITE_KEY',
+          sitekey: '0x4AAAAAABlzhX-ph0YwVRFJ',
           callback: window.turnstileCallback
         });
       }
