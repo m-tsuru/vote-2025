@@ -1,0 +1,14 @@
+# Binaries
+app
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+# Output
+*.out
+# Go modules
+go.sum
+go.mod
+# VCS
+.git

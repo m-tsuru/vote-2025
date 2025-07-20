@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  vote-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - TURNSTILE_SECRET=your_turnstile_secret
+    volumes:
+      - ./votes.json:/app/votes.json
+    restart: unless-stopped

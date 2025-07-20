@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>エディタ選挙 2025 投票所</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    canvas {
+      max-width: 400px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>エディタ選挙 2025</h2>
+  <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAABlzhX-ph0YwVRFJ"></div>
+  <div id="vote-buttons"></div>
+  <canvas id="halfPieChart"></canvas>
+  <h2>選挙三原則</h2>
+  <p>選挙三原則を遵守していますから。</p>
+  <ul>
+    <li>普通選挙 / 納税額や性別などによって選挙権に差別を設けない。</li>
+    <li>秘密選挙 / <span style="font-weight: bold">Cookie を削除しない限り</span>平等に一人一票</li>
+    <li>平等選挙 / <span style="font-weight: bold">HTTPS を使用している限り投票箱までは周りからは</span>誰に投票したかわからない</li>
+  </ul>
+  <script>
+    // エディタ一覧・色
+    const editors = ['vi', 'vim', 'nano', 'emacs', 'vscode', 'sublime', 'atom', 'other'];
+    const editorLabels = ['vi', 'vim', 'nano', 'emacs', 'VSCode', 'Sublime', 'Atom', 'その他'];
+    const editorColors = [
+      '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f'
+    ];
+
+    // ボタン生成
+    const voteButtonsDiv = document.getElementById('vote-buttons');
+    const voteBtns = [];
+    editors.forEach((editor, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = editorLabels[i];
+      btn.onclick = () => vote(editor);
+      btn.disabled = true; // 最初は無効化
+      voteButtonsDiv.appendChild(btn);
+      voteBtns.push(btn);
+    });
+
+    // Turnstile認証後にボタン有効化
+    window.turnstileCallback = function(token) {
+      voteBtns.forEach(btn => btn.disabled = false);
+      window.turnstileToken = token;
+    };
+
+    // Turnstileウィジェットのコールバック設定
+    window.onload = function() {
+      if (window.turnstile) {
+        window.turnstile.render('#cf-turnstile', {
+          sitekey: 'YOUR_SITE_KEY',
+          callback: window.turnstileCallback
+        });
+      }
+    };
+
+    // Chart.js用データ
+    let votes = Array(editors.length).fill(0);
+    const data = {
+      labels: editorLabels,
+      datasets: [{
+        data: votes,
+        backgroundColor: editorColors,
+        borderWidth: 1
+      }]
+    };
+    const config = {
+      type: 'doughnut',
+      data: data,
+      options: {
+        rotation: -90,
+        circumference: 180,
+        cutout: '60%',
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      },
+      plugins: []
+    };
+
+    // 総投票数を中央に描画するプラグイン
+    const totalVotesPlugin = {
+      id: 'totalVotesCenter',
+      afterDraw(chart) {
+        const {ctx, chartArea, width, height} = chart;
+        ctx.save();
+        ctx.font = 'bold 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+        ctx.fillStyle = '#333';
+        const centerX = width / 2;
+        const centerY = chartArea.top + (chartArea.bottom - chartArea.top) / 1.5;
+        ctx.fillText(total + '票', centerX, centerY);
+        ctx.restore();
+      }
+    };
+    config.plugins = [totalVotesPlugin];
+
+    const chart = new Chart(
+      document.getElementById('halfPieChart'),
+      config
+    );
+
+    // APIから投票データ取得
+    async function fetchVotes() {
+      const res = await fetch('/api/votes');
+      if (!res.ok) return;
+      const json = await res.json();
+      votes = json.votes;
+      chart.data.datasets[0].data = votes;
+      chart.update();
+    }
+
+    // 投票関数
+    async function vote(editor) {
+      // Turnstileトークンがなければ投票不可
+      if (!window.turnstileToken) {
+        alert('人間認証を完了してください');
+        return;
+      }
+      const res = await fetch('/api/votes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editor, turnstile: window.turnstileToken })
+      });
+      if (!res.ok) {
+        if (res.status === 403) {
+          alert('すでに投票済みです。');
+          voteBtns.forEach(btn => btn.disabled = true);
+        }
+        return;
+      }
+      const json = await res.json();
+      votes = json.votes;
+      chart.data.datasets[0].data = votes;
+      chart.update();
+      // 投票後はボタンを無効化
+      voteBtns.forEach(btn => btn.disabled = true);
+    }
+
+    // 初期表示
+    fetchVotes();
+    // すでに投票済みならボタンを無効化
+    if (document.cookie.split(';').some(c => c.trim().startsWith('voted=true'))) {
+      voteBtns.forEach(btn => btn.disabled = true);
+    }
+  </script>
+</body>
+</html>
