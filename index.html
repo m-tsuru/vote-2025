@@ -17,8 +17,13 @@
   <style>
     body {
       font-family: sans-serif;
+      max-width: 38rem;
+      padding: 2rem;
+      margin: auto;
+    }
+
+    h2 {
       text-align: center;
-      padding: 20px;
     }
 
     canvas {
@@ -30,13 +35,13 @@
 
 <body>
   <h2>エディタ選挙 2025</h2>
-  <div id="cf-turnstile"></div>
-  <div id="vote-buttons"></div>
-  <canvas id="halfPieChart"></canvas>
+  <div id="cf-turnstile" style="text-align: center;"></div>
+  <div id="vote-buttons" style="text-align: center;"></div>
+  <canvas id="halfPieChart" style="text-align: center;"></canvas>
   <h2>選挙三原則</h2>
-  <p>選挙三原則を遵守していますから。</p>
+  <p style="text-align: center;">選挙三原則を遵守していますから、安心しなさい。</p>
   <ul>
-    <li>普通選挙 / <span style="font-weight: bold">ユーザエージェントに関わらず</span>選挙権に差別を設けない。</li>
+    <li>普通選挙 / <span style="font-weight: bold">ユーザエージェントに関わらず</span>選挙権に差別を設けない</li>
     <li>秘密選挙 / <span style="font-weight: bold">Cookie を削除しない限り</span>平等に一人一票</li>
     <li>平等選挙 / <span style="font-weight: bold">HTTPS を使用している限り投票箱までは周りからは</span>誰に投票したかわからない</li>
   </ul>
