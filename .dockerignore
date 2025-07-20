@@ -8,7 +8,7 @@ app
 # Output
 *.out
 # Go modules
-go.sum
-go.mod
+# go.sum
+# go.mod
 # VCS
 .git
