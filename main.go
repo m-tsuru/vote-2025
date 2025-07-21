@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	editors   = []string{"vi", "vim", "nano", "emacs", "vscode", "sublime", "atom", "neovim", "ed", "sakura", "hidemaru", "other"}
+	editors   = []string{"vi", "vim", "nano", "emacs", "vscode", "sublime", "atom", "neovim", "ed", "sakura", "hidemaru", "emeditor", "other"}
 	votes     []int
 	mu        sync.Mutex
 	votesFile = "votes.json"
